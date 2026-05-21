@@ -104,6 +104,7 @@ Missing values (`NaN`) are preserved unchanged regardless of the expression.
 `chap causal` trains a model on the original dataset, then predicts from a chosen split period to the end of both the original and counterfactual datasets. With `--plot` it writes an interactive HTML comparison.
 
 ```bash
+mkdir -p results
 chap causal \
     --model-name https://github.com/dhis2-chap/minimalist_example_lag \
     --dataset-csv data/vietnam_monthly.csv \
