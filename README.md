@@ -92,6 +92,22 @@ Missing values (`NaN`) are preserved unchanged regardless of the expression.
 
 ---
 
+## Step 1b — (Optional) Visualise the Counterfactual Dataset
+
+Before running the full causal analysis you can quickly inspect the counterfactual dataset to confirm that the transformations were applied correctly:
+
+```bash
+chap plot-dataset data/vietnam_monthly_cf.csv
+```
+
+This opens an interactive multi-feature plot. Each panel shows the standardised time series for all numeric columns (`log1p` of disease cases, `mean_temperature`, `population`, and `rainfall`) for one province. You should see the sharp drops in `mean_temperature` and `rainfall` introduced by the counterfactual transformation:
+
+![Interactive dataset plot of the counterfactual CSV showing standardised feature time series per province — the sharp drops in temperature and rainfall from the counterfactual transformation are clearly visible](data/cf_dataset_plot.png)
+
+Click legend items to toggle individual features on or off, and scroll down to browse additional provinces.
+
+---
+
 ## Step 2 — Generate a Comparison Plot
 
 `chap causal` trains a model on the original dataset, then predicts from a chosen split period to the end of both the original and counterfactual datasets. With `--plot` it writes an interactive HTML comparison. `--cf-start-period 2009-08` tells chap to apply the counterfactual values from this time period. This is relevant for models that take into account previous time period climate feature values to make predictions.
