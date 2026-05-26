@@ -12,7 +12,7 @@ This tutorial shows how to use `chap-core`'s CLI to compare model predictions un
 ```mermaid
 flowchart TD
     A["data/vietnam_monthly.csv<br/>(original)"]
-    A --> B["chap causal build-counterfactual<br/>'mean_temperature=x-30' 'rainfall=x*0.1'"]
+    A --> B["chap causal build-counterfactual<br/>'mean_temperature=x-30' 'rainfall=x*0.01'"]
     B --> C["data/vietnam_monthly_cf.csv<br/>(counterfactual)"]
     A --> D["chap causal --plot"]
     C --> D
