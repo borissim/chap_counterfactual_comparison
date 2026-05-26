@@ -75,7 +75,7 @@ chap causal build-counterfactual \
     --output-csv data/vietnam_monthly_cf.csv
 ```
 
-This produces `data/vietnam_monthly_cf.csv` with every `mean_temperature` value reduced by 30°C and every `rainfall` value scaled to 10% of its original.
+This produces `data/vietnam_monthly_cf.csv` with every `mean_temperature` value reduced by 30°C and every `rainfall` value scaled to 1% of its original.
 
 **Apply the transformation only from a specific month onward:**
 
