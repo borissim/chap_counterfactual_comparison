@@ -70,24 +70,13 @@ The following command simulates a **30°C reduction in mean temperature** and a 
 
 ```bash
 chap causal build-counterfactual \
-    data/vietnam_monthly.csv \
-    "mean_temperature=x-30" \
-    "rainfall=x*0.01" \
-    --output-csv data/vietnam_monthly_cf.csv
+data/vietnam_monthly.csv \
+rainfall="x*0.01" \
+mean_temperature="x-30" \
+--start-time-period 09-2008
 ```
 
-This produces `data/vietnam_monthly_cf.csv` with every `mean_temperature` value reduced by 30°C and every `rainfall` value scaled to 1% of its original.
-
-**Apply the transformation only from a specific month onward:**
-
-```bash
-chap causal build-counterfactual \
-    data/vietnam_monthly.csv \
-    "mean_temperature=x-30" \
-    "rainfall=x*0.01" \
-    --start-time-period 2009-01 \
-    --output-csv data/vietnam_monthly_cf.csv
-```
+This produces `data/vietnam_monthly_cf.csv` with every `mean_temperature` value reduced by 30°C and every `rainfall` value scaled to 1% of its original, starting from 09-2008
 
 **Expression syntax:**
 
