@@ -2,3 +2,4 @@
 results/*
 data/vietnam_monthly_cf.csv
 .DS_Store
+runs/*
