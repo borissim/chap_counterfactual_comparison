@@ -65,13 +65,13 @@ The `data/` directory contains the Vietnam monthly dengue dataset from chap-core
 
 `chap causal build-counterfactual` creates a modified copy of your CSV by applying a mathematical expression to one or more columns. Use `x` to refer to the original cell value.
 
-The following command simulates a **30°C reduction in mean temperature** and a **90% reduction in rainfall** across the entire time series:
+The following command simulates a **30°C reduction in mean temperature** and a **99% reduction in rainfall** across the entire time series:
 
 ```bash
 chap causal build-counterfactual \
     data/vietnam_monthly.csv \
     "mean_temperature=x-30" \
-    "rainfall=x*0.1" \
+    "rainfall=x*0.01" \
     --output-csv data/vietnam_monthly_cf.csv
 ```
 
@@ -83,8 +83,8 @@ This produces `data/vietnam_monthly_cf.csv` with every `mean_temperature` value 
 chap causal build-counterfactual \
     data/vietnam_monthly.csv \
     "mean_temperature=x-30" \
-    "rainfall=x*0.1" \
-    --start-time-period 2015-01 \
+    "rainfall=x*0.01" \
+    --start-time-period 2009-01 \
     --output-csv data/vietnam_monthly_cf.csv
 ```
 
@@ -104,7 +104,7 @@ Missing values (`NaN`) are preserved unchanged regardless of the expression.
 
 ## Step 2 — Generate a Comparison Plot
 
-`chap causal` trains a model on the original dataset, then predicts from a chosen split period to the end of both the original and counterfactual datasets. With `--plot` it writes an interactive HTML comparison.
+`chap causal` trains a model on the original dataset, then predicts from a chosen split period to the end of both the original and counterfactual datasets. With `--plot` it writes an interactive HTML comparison. `--cf-start-period 2009-08` tells chap to apply the counterfactual values from this time period. This is relevant for models that take into account previous time period climate feature values to make predictions.
 
 ```bash
 mkdir -p results
@@ -114,6 +114,7 @@ chap causal \
     --counterfactual-csv data/vietnam_monthly_cf.csv \
     --counterfactual-columns mean_temperature rainfall \
     --split-period 2010-07 \
+    --cf-start-period 2009-08 \
     --output-file results/causal.nc \
     --plot
 ```
@@ -127,6 +128,7 @@ chap causal \
 | `--counterfactual-csv` | The counterfactual dataset produced in Step 1 |
 | `--counterfactual-columns` | Columns that differ between the two datasets (space-separated if more than one) |
 | `--split-period` | Period that separates the training window (before) from the prediction window (from this period to the end of the dataset) |
+| `--cf-start-period` | Period from which the counterfactual values are applied to the counterfactual prediction scenario |
 | `--output-file` | Path for the NetCDF results file |
 | `--plot` | Also write an HTML comparison plot alongside the NetCDF files |
 
