@@ -12,7 +12,7 @@ This tutorial shows how to use `chap-core`'s CLI to compare model predictions un
 ```mermaid
 flowchart TD
     A["data/vietnam_monthly.csv<br/>(original)"]
-    A --> B["chap causal build-counterfactual<br/>'rainfall=x*0.5'"]
+    A --> B["chap causal build-counterfactual<br/>'mean_temperature=x-30' 'rainfall=x*0.1'"]
     B --> C["data/vietnam_monthly_cf.csv<br/>(counterfactual)"]
     A --> D["chap causal --plot"]
     C --> D
@@ -30,7 +30,8 @@ Follow the [chap contributor setup guide](https://chap.dhis2.org/chap-modeling-p
 ```bash
 git clone https://github.com/dhis2-chap/chap-core.git
 cd chap-core
-pip install uv
+# install uv (see https://docs.astral.sh/uv/getting-started/installation/)
+curl -LsSf https://astral.sh/uv/install.sh | sh
 uv sync
 source .venv/bin/activate
 chap --help   # verify the installation
@@ -64,23 +65,25 @@ The `data/` directory contains the Vietnam monthly dengue dataset from chap-core
 
 `chap causal build-counterfactual` creates a modified copy of your CSV by applying a mathematical expression to one or more columns. Use `x` to refer to the original cell value.
 
-The following command simulates a **50% reduction in rainfall** across the entire time series:
+The following command simulates a **30°C reduction in mean temperature** and a **90% reduction in rainfall** across the entire time series:
 
 ```bash
 chap causal build-counterfactual \
     data/vietnam_monthly.csv \
-    "rainfall=x*0.5" \
+    "mean_temperature=x-30" \
+    "rainfall=x*0.1" \
     --output-csv data/vietnam_monthly_cf.csv
 ```
 
-This produces `data/vietnam_monthly_cf.csv` with the `rainfall` column halved everywhere.
+This produces `data/vietnam_monthly_cf.csv` with every `mean_temperature` value reduced by 30°C and every `rainfall` value scaled to 10% of its original.
 
 **Apply the transformation only from a specific month onward:**
 
 ```bash
 chap causal build-counterfactual \
     data/vietnam_monthly.csv \
-    "rainfall=x*0.5" \
+    "mean_temperature=x-30" \
+    "rainfall=x*0.1" \
     --start-time-period 2015-01 \
     --output-csv data/vietnam_monthly_cf.csv
 ```
@@ -106,11 +109,11 @@ Missing values (`NaN`) are preserved unchanged regardless of the expression.
 ```bash
 mkdir -p results
 chap causal \
-    --model-name https://github.com/dhis2-chap/minimalist_example_lag \
+    --model-name https://github.com/chap-models/chap_pymc \
     --dataset-csv data/vietnam_monthly.csv \
     --counterfactual-csv data/vietnam_monthly_cf.csv \
-    --counterfactual-columns rainfall \
-    --split-period 2019-01 \
+    --counterfactual-columns mean_temperature rainfall \
+    --split-period 2010-07 \
     --output-file results/causal.nc \
     --plot
 ```
@@ -127,7 +130,7 @@ chap causal \
 | `--output-file` | Path for the NetCDF results file |
 | `--plot` | Also write an HTML comparison plot alongside the NetCDF files |
 
-The model is trained **once** on the original data up to (but not including) `2019-01`, then predictions are generated for both datasets from `2019-01` onwards.
+The model is trained **once** on the original data up to (but not including) `2010-07`, then predictions are generated for both datasets from `2010-07` onwards (the last 6 months of the dataset).
 
 ---
 
@@ -143,3 +146,7 @@ results/
 ```
 
 Open `results/causal.html` in a browser to explore how the predicted disease burden differs between the original climate conditions and the counterfactual scenario.
+
+![Causal analysis comparison plot showing original vs counterfactual predicted dengue cases side by side for Vietnamese provinces](data/results_screenshot.png)
+
+The plot shows side-by-side panels for each location: **Original** (predictions under observed climate) and **Counterfactual** (predictions under the modified climate). Both panels use the same colour scheme — compare the prediction bands across the two panels to see the effect of the counterfactual scenario. Scroll down to see additional provinces.
